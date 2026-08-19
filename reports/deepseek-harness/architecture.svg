@@ -1,0 +1,128 @@
+<svg id="repo-arch" class="chart" role="img" aria-label="Layered repository architecture" viewBox="0 0 1000 720" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+  <title>Layered repository architecture</title>
+  <defs><marker id="repo-arch-arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L6,3 L0,6 Z" fill="#8b98b3"/></marker></defs>
+  <g class="arch-layer" data-layer="Experience · 用户界面与接入">
+    <rect x="0" y="20" width="1000" height="112" rx="4" fill="#175cff" fill-opacity="0.06"/>
+    <rect x="0" y="20" width="6" height="112" rx="3" fill="#175cff"/>
+    <text x="16" y="43" font-size="14" font-weight="700" fill="#175cff">Experience · 用户界面与接入</text>
+    <g class="abox" data-id="arch-web" data-title="Web Workspace" transform="translate(154.0,56)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#175cff" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Web Workspace</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">会话、设置、审批</text>
+    </g>
+    <g class="abox" data-id="arch-cli" data-title="CLI / Headless" transform="translate(390.0,56)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#175cff" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">CLI / Headless</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">启动、配置、自动化</text>
+    </g>
+    <g class="abox" data-id="arch-trajectory" data-title="Trajectory UI" transform="translate(626.0,56)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#175cff" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Trajectory UI</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">步骤、工具、成本</text>
+    </g>
+  </g>
+  <line x1="500" y1="136" x2="500" y2="156" stroke="#8b98b3" stroke-width="1.6" marker-end="url(#repo-arch-arrow)"/>
+  <g class="arch-layer" data-layer="Composition · 产品装配">
+    <rect x="0" y="162" width="1000" height="112" rx="4" fill="#ff6b35" fill-opacity="0.06"/>
+    <rect x="0" y="162" width="6" height="112" rx="3" fill="#ff6b35"/>
+    <text x="16" y="185" font-size="14" font-weight="700" fill="#ff6b35">Composition · 产品装配</text>
+    <g class="abox" data-id="arch-profile" data-title="Profiles" transform="translate(36.0,198)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#ff6b35" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Profiles</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">产品形态</text>
+    </g>
+    <g class="abox" data-id="arch-bundle" data-title="Bundles" transform="translate(272.0,198)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#ff6b35" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Bundles</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">插件组合</text>
+    </g>
+    <g class="abox" data-id="arch-preset" data-title="Agent Presets" transform="translate(508.0,198)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#ff6b35" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Agent Presets</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">角色与能力包</text>
+    </g>
+    <g class="abox" data-id="arch-cordis" data-title="Cordis" transform="translate(744.0,198)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#ff6b35" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Cordis</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">服务、事件、副作用</text>
+    </g>
+  </g>
+  <line x1="500" y1="278" x2="500" y2="298" stroke="#8b98b3" stroke-width="1.6" marker-end="url(#repo-arch-arrow)"/>
+  <g class="arch-layer" data-layer="Runtime · Agent 执行循环">
+    <rect x="0" y="304" width="1000" height="112" rx="4" fill="#7c3aed" fill-opacity="0.06"/>
+    <rect x="0" y="304" width="6" height="112" rx="3" fill="#7c3aed"/>
+    <text x="16" y="327" font-size="14" font-weight="700" fill="#7c3aed">Runtime · Agent 执行循环</text>
+    <g class="abox" data-id="arch-loop" data-title="Agent Loop" transform="translate(36.0,340)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#7c3aed" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Agent Loop</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">Turn / Step</text>
+    </g>
+    <g class="abox" data-id="arch-model" data-title="Model Adapter" transform="translate(272.0,340)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#7c3aed" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Model Adapter</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">流式请求与重试</text>
+    </g>
+    <g class="abox" data-id="arch-tool" data-title="Tool Scheduler" transform="translate(508.0,340)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#7c3aed" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Tool Scheduler</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">并发与独占屏障</text>
+    </g>
+    <g class="abox" data-id="arch-subagent" data-title="Subagent / Workflow" transform="translate(744.0,340)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#7c3aed" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Subagent / Workflow</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">委派与目标</text>
+    </g>
+  </g>
+  <line x1="500" y1="420" x2="500" y2="440" stroke="#8b98b3" stroke-width="1.6" marker-end="url(#repo-arch-arrow)"/>
+  <g class="arch-layer" data-layer="Control · 权限与信任边界">
+    <rect x="0" y="446" width="1000" height="112" rx="4" fill="#0086b3" fill-opacity="0.06"/>
+    <rect x="0" y="446" width="6" height="112" rx="3" fill="#0086b3"/>
+    <text x="16" y="469" font-size="14" font-weight="700" fill="#0086b3">Control · 权限与信任边界</text>
+    <g class="abox" data-id="arch-policy" data-title="Tool Policy" transform="translate(36.0,482)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#0086b3" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Tool Policy</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">allow / deny / ask</text>
+    </g>
+    <g class="abox" data-id="arch-approval" data-title="User Approval" transform="translate(272.0,482)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#0086b3" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">User Approval</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">fail closed</text>
+    </g>
+    <g class="abox" data-id="arch-sandbox" data-title="Sandbox Policy" transform="translate(508.0,482)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#0086b3" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Sandbox Policy</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">工作区写入</text>
+    </g>
+    <g class="abox" data-id="arch-cancel" data-title="Cancel / Timeout" transform="translate(744.0,482)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#0086b3" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Cancel / Timeout</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">终止与恢复</text>
+    </g>
+  </g>
+  <line x1="500" y1="562" x2="500" y2="582" stroke="#8b98b3" stroke-width="1.6" marker-end="url(#repo-arch-arrow)"/>
+  <g class="arch-layer" data-layer="State &amp; Extension · 状态与生态">
+    <rect x="0" y="588" width="1000" height="112" rx="4" fill="#087f5b" fill-opacity="0.06"/>
+    <rect x="0" y="588" width="6" height="112" rx="3" fill="#087f5b"/>
+    <text x="16" y="611" font-size="14" font-weight="700" fill="#087f5b">State &amp; Extension · 状态与生态</text>
+    <g class="abox" data-id="arch-session" data-title="Session Log" transform="translate(36.0,624)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#087f5b" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Session Log</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">模型上下文事实源</text>
+    </g>
+    <g class="abox" data-id="arch-compact" data-title="Compaction" transform="translate(272.0,624)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#087f5b" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Compaction</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">摘要与结果裁剪</text>
+    </g>
+    <g class="abox" data-id="arch-skills" data-title="Skills / MCP" transform="translate(508.0,624)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#087f5b" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Skills / MCP</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">外部能力</text>
+    </g>
+    <g class="abox" data-id="arch-telemetry" data-title="Telemetry" transform="translate(744.0,624)">
+      <rect width="220.0" height="58" rx="4" fill="#fff" stroke="#087f5b" stroke-opacity="0.55"/>
+      <text x="110.0" y="24" font-size="13" font-weight="600" text-anchor="middle" fill="#172033">Telemetry</text>
+      <text x="110.0" y="43" font-size="11" text-anchor="middle" fill="#5f6b7a">可选原始导出</text>
+    </g>
+  </g>
+</svg>

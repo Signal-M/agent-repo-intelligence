@@ -1,0 +1,46 @@
+name: Analysis or validation bug
+description: Report an incorrect decision, evidence leak, schema issue, or broken artifact
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: request
+    attributes:
+      label: User request and decision context
+      description: Provide the original task and any business context that was available.
+    validations:
+      required: true
+  - type: textarea
+    id: artifact
+    attributes:
+      label: Repository or artifact under analysis
+      description: Include the repository URL, commit/ref, report, JSON, or minimal fixture.
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior
+      description: What did the skill conclude or generate?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected decision-quality behavior
+      description: Explain the evidence rule, scenario distinction, gate, or validator behavior that should apply.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Supporting evidence
+      description: Add file paths, symbols, commit-pinned links, counterevidence, or validation output.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials, private repository content, personal data, and unrelated local files.
+          required: true
+

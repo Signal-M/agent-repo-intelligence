@@ -1,0 +1,14 @@
+.DS_Store
+node_modules/
+*.log
+*.tmp
+*.bak
+
+# Local/private work that is not part of the public skill distribution
+pm-interview-review/
+
+# Local environment metadata
+.env
+.env.*
+!.env.example
+

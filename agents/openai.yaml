@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Repo Intelligence"
+  short_description: "Evaluate open-source Agent projects for business adoption"
+  default_prompt: "Use $repo-competitive-analysis to evaluate this GitHub project as a product and Agent system, decide where it fits in a real business, and produce a measurable pilot plan."

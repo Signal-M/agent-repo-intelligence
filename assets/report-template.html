@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>开源项目产品分析报告</title>
+<style>
+  :root{
+    --canvas:#f2f3f5;--paper:#fcfcfb;--ink:#171a1f;--muted:#68717d;--line:#d9dde2;
+    --line-strong:#adb5bf;--accent:#2457d6;--accent-soft:#edf2ff;--rail:#161b22;
+    --rail-muted:#9099a6;--good:#16765a;--warn:#9b5b08;--bad:#ad342d;
+    --sans:"Avenir Next","Helvetica Neue","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+    --mono:"SFMono-Regular","Cascadia Code",Menlo,Consolas,monospace
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;color:var(--ink);font:14px/1.7 var(--sans);background:var(--canvas)}
+  .skip-link{position:fixed;left:12px;top:8px;z-index:20;padding:8px 12px;color:#fff;background:var(--accent);transform:translateY(-150%)}
+  .skip-link:focus{transform:none}
+  .tab-toggle{position:fixed;inline-size:1px;block-size:1px;opacity:0;pointer-events:none}
+  .workspace{max-width:1440px;min-height:100dvh;margin:auto;display:grid;grid-template-columns:272px minmax(0,1fr);background:var(--paper);border-inline:1px solid var(--line)}
+  .rail{position:sticky;top:0;height:100dvh;overflow:auto;padding:28px 22px;background:var(--rail);color:#fff}
+  .rail-brand{padding-bottom:24px;border-bottom:1px solid #303844}
+  .rail-brand strong{display:block;font-size:16px;letter-spacing:-.02em}
+  .rail-brand span{display:block;margin-top:5px;color:var(--rail-muted);font:10px/1.5 var(--mono)}
+  .repo-meta{margin:22px 0 25px;color:#cbd2dc;font:11px/1.75 var(--mono)}
+  .repo-meta b{display:block;color:#fff;font-size:12px;overflow-wrap:anywhere}
+  nav.tabs{display:grid;gap:3px}
+  nav.tabs label{cursor:pointer;padding:10px 11px;color:#aab3bf;border-left:2px solid transparent;font-size:12px;font-weight:600;transition:background .16s ease,color .16s ease,border-color .16s ease}
+  nav.tabs label:hover{color:#fff;background:#202731}
+  .evidence-key{margin-top:30px;padding-top:20px;border-top:1px solid #303844}
+  .evidence-key h2{margin:0 0 10px;color:#fff;font-size:11px;font-weight:700}
+  .evidence-key p{margin:8px 0;color:var(--rail-muted);font-size:10px;line-height:1.45}
+  .evidence-key .status{margin-right:5px}
+  .rail-note{margin-top:24px;color:#7f8996;font-size:10px;line-height:1.55}
+  .content{min-width:0;padding:0 clamp(24px,5vw,76px) 72px}
+  .report-head{display:grid;grid-template-columns:minmax(0,1fr) 235px;gap:56px;align-items:end;padding:54px 0 30px;border-bottom:1px solid var(--line)}
+  .report-head h1{max-width:780px;margin:0;font-size:clamp(34px,4.2vw,58px);line-height:1.02;letter-spacing:-.055em;font-weight:650;text-wrap:balance}
+  .report-head h1 span{display:block;margin-bottom:10px;color:var(--accent);font:600 12px/1.3 var(--mono);letter-spacing:.02em}
+  .head-brief{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+  .head-brief strong{display:block;margin-bottom:7px;color:var(--ink)}
+  section.view{display:none;padding-top:34px}
+  #tab-summary:checked ~ .workspace #view-summary,#tab-product:checked ~ .workspace #view-product,
+  #tab-agent:checked ~ .workspace #view-agent,#tab-architecture:checked ~ .workspace #view-architecture,
+  #tab-assessment:checked ~ .workspace #view-assessment,#tab-borrow:checked ~ .workspace #view-borrow,
+  #tab-adoption:checked ~ .workspace #view-adoption,#tab-pilot:checked ~ .workspace #view-pilot,
+  #tab-evidence:checked ~ .workspace #view-evidence{display:block}
+  #tab-summary:checked ~ .workspace label[for="tab-summary"],#tab-product:checked ~ .workspace label[for="tab-product"],
+  #tab-agent:checked ~ .workspace label[for="tab-agent"],#tab-architecture:checked ~ .workspace label[for="tab-architecture"],
+  #tab-assessment:checked ~ .workspace label[for="tab-assessment"],#tab-borrow:checked ~ .workspace label[for="tab-borrow"],
+  #tab-adoption:checked ~ .workspace label[for="tab-adoption"],#tab-pilot:checked ~ .workspace label[for="tab-pilot"],
+  #tab-evidence:checked ~ .workspace label[for="tab-evidence"]{color:#fff;background:#252d38;border-left-color:#7197ff}
+  #tab-summary:focus-visible ~ .workspace label[for="tab-summary"],#tab-product:focus-visible ~ .workspace label[for="tab-product"],
+  #tab-agent:focus-visible ~ .workspace label[for="tab-agent"],#tab-architecture:focus-visible ~ .workspace label[for="tab-architecture"],
+  #tab-assessment:focus-visible ~ .workspace label[for="tab-assessment"],#tab-borrow:focus-visible ~ .workspace label[for="tab-borrow"],
+  #tab-adoption:focus-visible ~ .workspace label[for="tab-adoption"],#tab-pilot:focus-visible ~ .workspace label[for="tab-pilot"],
+  #tab-evidence:focus-visible ~ .workspace label[for="tab-evidence"]{outline:2px solid #9db7ff;outline-offset:2px}
+  .view-title{display:flex;justify-content:space-between;gap:24px;align-items:baseline;margin:0 0 24px}
+  .view-title h2{margin:0;font-size:20px;letter-spacing:-.025em}
+  .view-title p{max-width:48ch;margin:0;color:var(--muted);font-size:12px}
+  .decision-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(240px,.7fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+  .thesis{padding:34px 36px 38px;background:#fff}
+  .thesis h2{margin:0 0 20px;color:var(--muted);font-size:12px;font-weight:650}
+  .thesis .lead{max-width:780px;margin:0;font-size:clamp(23px,2.5vw,34px);line-height:1.38;letter-spacing:-.035em;font-weight:560;text-wrap:pretty}
+  .thesis-note{margin:25px 0 0;padding-top:16px;border-top:1px solid var(--line);color:var(--muted)}
+  .snapshot{padding:30px 26px;background:#f6f7f8}
+  .snapshot dl{margin:0}
+  .snapshot div{padding:0 0 15px;margin:0 0 15px;border-bottom:1px solid var(--line)}
+  .snapshot div:last-child{margin:0;padding:0;border:0}
+  dt{color:var(--muted);font:10px/1.4 var(--mono)}dd{margin:5px 0 0;font-weight:650}
+  .status{display:inline-block;padding:2px 6px;border:1px solid currentColor;border-radius:2px;font:700 9px/1.4 var(--mono);letter-spacing:.04em;vertical-align:1px}
+  .verified{color:var(--good);background:#ebf7f2}.inferred{color:var(--warn);background:#fff5df}.unknown{color:var(--muted);background:#edf0f3}.conflicted{color:var(--bad);background:#fcecea}
+  .judgements{counter-reset:item;display:grid;grid-template-columns:1.35fr 1fr;margin:38px 0 0;border-top:2px solid var(--ink)}
+  .judgements article{counter-increment:item;padding:23px 24px 25px 0;border-bottom:1px solid var(--line)}
+  .judgements article:first-child{grid-row:span 2;padding-right:36px;border-right:1px solid var(--line)}
+  .judgements article:not(:first-child){padding-left:28px}
+  .judgements article::before{content:counter(item);display:block;margin-bottom:18px;color:var(--accent);font:700 24px/1 var(--mono)}
+  .judgements h3{margin:0 0 8px;font-size:17px}.judgements p{margin:0;color:var(--muted)}
+  .journey{display:grid;grid-template-columns:repeat(6,minmax(130px,1fr));overflow:auto;margin:18px 0 32px;border-block:1px solid var(--line)}
+  .journey div{position:relative;min-height:118px;padding:19px 24px 18px 0;margin-right:22px}
+  .journey div:not(:last-child)::after{content:"→";position:absolute;right:-4px;top:45px;color:var(--line-strong)}
+  .journey b{display:block;margin-bottom:10px;font-size:12px}.journey span{color:var(--muted);font-size:11px}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:30px}
+  .ruled{padding-top:18px;border-top:2px solid var(--ink)}.ruled h3{margin:0 0 8px;font-size:16px}.ruled p{margin:0;color:var(--muted)}
+  .agent-layout{display:grid;grid-template-columns:minmax(220px,.65fr) minmax(0,1.5fr);gap:42px}
+  .agent-principle{position:sticky;top:28px;align-self:start;padding:24px;background:var(--accent);color:#fff}
+  .agent-principle h3{margin:0 0 14px;font-size:20px}.agent-principle p{margin:0;color:#dbe5ff}
+  .matrix-row{display:grid;grid-template-columns:190px 1fr 1fr auto;gap:18px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .matrix-row:first-child{border-top:2px solid var(--ink)}.matrix-row b{font-size:12px}.matrix-row span{color:var(--muted);font-size:12px}
+  .visual-canvas{margin-bottom:30px;padding:24px;background:#f4f6f8;border:1px solid var(--line)}
+  .visual-canvas h3{margin:0 0 4px;font-size:16px}.chart-help{margin:0 0 16px;color:var(--muted);font:10px/1.6 var(--mono)}
+  .chart{display:block;width:100%;height:auto;min-height:220px;background:#fff;border:1px solid var(--line)}.gnode{cursor:pointer}
+  .assessment-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px}
+  .finding-list{margin:0;padding:0;list-style:none;border-top:2px solid var(--ink)}
+  .finding-list li{padding:18px 0;border-bottom:1px solid var(--line)}.finding-list b{display:block;margin-bottom:5px}.finding-list p{margin:0;color:var(--muted)}
+  .risk-block{padding:28px;background:#f3f4f6}.risk-block h3{margin-top:0}.risk-block ul{padding-left:18px}
+  .decision-queue{margin:0;padding:0;list-style:none;counter-reset:queue;border-top:2px solid var(--ink)}
+  .decision-queue li{counter-increment:queue;display:grid;grid-template-columns:44px 1.3fr 1fr auto;gap:22px;align-items:start;padding:21px 0;border-bottom:1px solid var(--line)}
+  .decision-queue li::before{content:counter(queue);color:var(--accent);font:700 22px/1 var(--mono)}
+  .decision-queue b{display:block}.decision-queue p{margin:4px 0 0;color:var(--muted)}
+  .gate-list{margin:0;padding:0;list-style:none;border-top:2px solid var(--ink)}
+  .gate-list li{display:grid;grid-template-columns:180px 110px 1fr 1fr;gap:18px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .gate-list b{font-size:12px}.gate-list p{margin:0;color:var(--muted);font-size:12px}
+  .stage-path{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));overflow:auto;margin:20px 0 30px;border-block:1px solid var(--line)}
+  .stage-path div{position:relative;padding:18px 20px 17px 0;margin-right:18px}.stage-path div:not(:last-child)::after{content:"→";position:absolute;right:-2px;top:29px;color:var(--line-strong)}
+  .stage-path b{display:block;font-size:11px}.stage-path span{color:var(--muted);font-size:10px}
+  .table-wrap{overflow:auto;border-top:2px solid var(--ink)}
+  table{width:100%;min-width:680px;border-collapse:collapse;background:#fff}
+  th,td{padding:12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);background:#f4f5f6;font:700 10px/1.4 var(--mono);letter-spacing:.03em}tbody tr:hover{background:#f7f8fa}
+  .source-ledger{display:grid;grid-template-columns:240px 1fr;border-top:2px solid var(--ink)}
+  .source-ledger dt,.source-ledger dd{margin:0;padding:15px 0;border-bottom:1px solid var(--line)}.source-ledger dd{font-weight:400;color:var(--muted)}
+  ul.tight{margin:8px 0;padding-left:20px}ul.tight li{margin:6px 0}
+  #graph-detail{display:none;position:fixed;right:18px;bottom:18px;z-index:8;width:min(300px,calc(100vw - 36px));padding:14px 16px;background:var(--rail);color:#dbe3ed;border:1px solid #46515f;border-radius:3px;box-shadow:0 18px 45px rgba(20,26,34,.22)}
+  #graph-detail h4{margin:0 0 5px;color:#8eacff}
+  footer{padding:24px 0 0;margin-top:48px;border-top:1px solid var(--line);color:var(--muted);font:10px/1.6 var(--mono)}
+  @media(prefers-reduced-motion:no-preference){section.view{animation:view-in .18s ease-out}@keyframes view-in{from{opacity:.35;transform:translateY(3px)}to{opacity:1;transform:none}}}
+  @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+  @media(max-width:900px){.workspace{grid-template-columns:1fr}.rail{position:relative;height:auto;padding:18px 20px}.rail-brand,.repo-meta,.evidence-key,.rail-note{display:none}nav.tabs{display:flex;overflow:auto}nav.tabs label{white-space:nowrap;border-left:0;border-bottom:2px solid transparent}.content{padding-inline:22px}.report-head{padding-top:34px}.agent-layout{grid-template-columns:1fr}.agent-principle{position:relative;top:auto}.matrix-row{grid-template-columns:150px 1fr 1fr}.matrix-row .status{grid-column:2}.assessment-grid{grid-template-columns:1fr}}
+  @media(max-width:620px){.report-head{grid-template-columns:1fr;gap:22px}.decision-grid,.split{grid-template-columns:1fr}.judgements{grid-template-columns:1fr}.judgements article:first-child{grid-row:auto;border-right:0}.judgements article:not(:first-child){padding-left:0}.view-title{display:block}.view-title p{margin-top:7px}.matrix-row,.gate-list li{grid-template-columns:1fr}.matrix-row .status{grid-column:auto}.decision-queue li{grid-template-columns:34px 1fr}.decision-queue li>:nth-child(n+3){grid-column:2}.source-ledger{grid-template-columns:1fr}.source-ledger dt{padding-bottom:3px;border-bottom:0}.source-ledger dd{padding-top:0}.thesis{padding:26px 22px}.snapshot{padding:24px 22px}}
+  @media print{body{background:#fff}.tab-toggle,.rail nav,.evidence-key,#graph-detail{display:none!important}.workspace{display:block;border:0}.rail{position:relative;height:auto;color:#000;background:#fff;padding:0}.rail-brand,.repo-meta{display:block;color:#000}.content{padding:0}section.view{display:block!important;animation:none!important;break-before:page}.report-head{padding-top:20px}.agent-principle{color:#000;background:#fff;border:1px solid var(--line)}.visual-canvas,.risk-block,.snapshot{background:#fff}.decision-grid,.visual-canvas,.table-wrap{break-inside:avoid}footer{display:none}}
+</style>
+</head>
+<body data-design-variance="7" data-motion-intensity="2" data-visual-density="8">
+<a class="skip-link" href="#report-content">跳到报告正文</a>
+
+<!-- Keep every radio, label, and view id in sync. Remove unused tabs in all three places. -->
+<input class="tab-toggle" type="radio" name="report-tab" id="tab-summary" checked>
+<input class="tab-toggle" type="radio" name="report-tab" id="tab-product">
+<input class="tab-toggle" type="radio" name="report-tab" id="tab-agent">
+<input class="tab-toggle" type="radio" name="report-tab" id="tab-adoption">
+<input class="tab-toggle" type="radio" name="report-tab" id="tab-architecture">
+<input class="tab-toggle" type="radio" name="report-tab" id="tab-assessment">
+<input class="tab-toggle" type="radio" name="report-tab" id="tab-borrow">
+<input class="tab-toggle" type="radio" name="report-tab" id="tab-pilot">
+<input class="tab-toggle" type="radio" name="report-tab" id="tab-evidence">
+
+<div class="workspace">
+<aside class="rail" aria-label="报告导航与证据说明">
+  <div class="rail-brand"><strong>Repo Lens</strong><span>open-source product intelligence</span></div>
+  <div class="repo-meta"><b>owner/repository</b>commit SHA<br>分析日期 · standard</div>
+  <nav class="tabs" aria-label="报告章节">
+    <label for="tab-summary">结论摘要</label>
+    <label for="tab-product">产品与用户</label>
+    <label for="tab-agent">Agent 设计</label>
+    <label for="tab-adoption">业务适配</label>
+    <label for="tab-architecture">能力与架构</label>
+    <label for="tab-assessment">判断与风险</label>
+    <label for="tab-borrow">借鉴与方案</label>
+    <label for="tab-pilot">试点与上线</label>
+    <label for="tab-evidence">证据与未知</label>
+  </nav>
+  <div class="evidence-key">
+    <h2>如何阅读证据</h2>
+    <p><span class="status verified">已验证</span>代码或一手资料直接支持</p>
+    <p><span class="status inferred">推断</span>多个信号支持，仍需验证</p>
+    <p><span class="status unknown">未知</span>证据不足，不强行下结论</p>
+  </div>
+  <p class="rail-note">本报告把产品判断与证据状态绑定，避免把 README 叙事当成已实现事实。</p>
+</aside>
+
+<div class="content" id="report-content">
+  <header class="report-head">
+    <h1><span>开源产品与 Agent 设计分析</span>项目名称</h1>
+    <p class="head-brief"><strong>阅读目标</strong>理解它服务谁、为什么这样设计，以及哪些机制值得验证和借鉴。</p>
+  </header>
+
+<main class="report">
+  <section class="view" id="view-summary">
+    <div class="view-title"><h2>结论摘要</h2><p>先给决策，再给支持它的信号和边界。</p></div>
+    <div class="decision-grid">
+      <article class="thesis"><h2>一句话产品定义</h2><p class="lead">为哪类用户，通过什么关键机制，完成什么工作，并带来什么结果。</p><p class="thesis-note"><span class="status inferred">推断</span> 替换为核心结论、判断边界与信心说明。</p></article>
+      <aside class="snapshot" aria-label="项目快照"><dl><div><dt>项目类型</dt><dd>—</dd></div><div><dt>Agent 相关度</dt><dd>—</dd></div><div><dt>交付形态</dt><dd>—</dd></div><div><dt>证据覆盖</dt><dd>—</dd></div></dl></aside>
+    </div>
+    <div class="judgements" aria-label="最重要的三个判断">
+      <article><h3>最影响产品方向的判断</h3><p>判断、证据状态、产品含义和可能推翻它的条件。</p></article>
+      <article><h3>关键机制</h3><p>它为什么有效，依赖什么，以及代价是什么。</p></article>
+      <article><h3>借鉴结论</h3><p>该复制、验证、观察，还是明确不做。</p></article>
+    </div>
+  </section>
+
+  <section class="view" id="view-adoption">
+    <div class="view-title"><h2>业务适配</h2><p>同一项目在不同用户、自治、数据和失败后果下需要不同决策。</p></div>
+    <div class="table-wrap"><table><thead><tr><th>业务场景</th><th>目标用户与工作流</th><th>最高安全自治</th><th>决定性约束</th><th>建议</th></tr></thead><tbody>
+      <tr><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="status unknown">unknown</span></td></tr>
+    </tbody></table></div>
+    <h3>Agent Readiness Gates</h3>
+    <ul class="gate-list">
+      <li><b>业务价值</b><span class="status unknown">unknown</span><p>关键证据或阻断项。</p><p>下一步最小验证。</p></li>
+      <li><b>任务 Agent 适配</b><span class="status unknown">unknown</span><p>关键证据或阻断项。</p><p>下一步最小验证。</p></li>
+      <li><b>数据与工具</b><span class="status unknown">unknown</span><p>关键证据或阻断项。</p><p>下一步最小验证。</p></li>
+      <li><b>可验证与停止</b><span class="status unknown">unknown</span><p>关键证据或阻断项。</p><p>下一步最小验证。</p></li>
+      <li><b>信任与控制</b><span class="status unknown">unknown</span><p>关键证据或阻断项。</p><p>下一步最小验证。</p></li>
+      <li><b>可靠性与运营</b><span class="status unknown">unknown</span><p>关键证据或阻断项。</p><p>下一步最小验证。</p></li>
+      <li><b>经济与组织</b><span class="status unknown">unknown</span><p>关键证据或阻断项。</p><p>下一步最小验证。</p></li>
+    </ul>
+    <div class="split"><article class="ruled"><h3>Build / Buy / Borrow / Avoid</h3><p>比较采用上游、分叉、借鉴机制、购买托管产品、自建、确定性自动化和保持现状。</p></article><article class="ruled"><h3>经济性与企业就绪度</h3><p>说明 TCO 输入、break-even 条件、身份/租户/数据/审计/运营阻断项。</p></article></div>
+  </section>
+
+  <section class="view" id="view-product">
+    <div class="view-title"><h2>产品与用户</h2><p>从真实任务进入，而不是从功能清单进入。</p></div>
+    <div class="table-wrap"><table><thead><tr><th>角色</th><th>JTBD / 痛点</th><th>现有替代</th><th>项目价值</th><th>证据</th></tr></thead><tbody><tr><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="status unknown">未知</span></td></tr></tbody></table></div>
+    <div class="journey" aria-label="最短价值路径"><div><b>触发</b><span>用户为何开始</span></div><div><b>设置</b><span>上下文与权限</span></div><div><b>核心动作</b><span>系统如何工作</span></div><div><b>结果</b><span>交付什么价值</span></div><div><b>纠正</b><span>如何验证与恢复</span></div><div><b>复用</b><span>如何形成持续价值</span></div></div>
+    <div class="split"><article class="ruled"><h3>体验与控制感</h3><p>替换为 onboarding、状态可见性、用户介入点和结果验证。</p></article><article class="ruled"><h3>边界与失败恢复</h3><p>替换为不适用场景、常见失败、降级策略和恢复路径。</p></article></div>
+  </section>
+
+  <section class="view" id="view-agent">
+    <div class="view-title"><h2>Agent 设计</h2><p>仅在 Agent 相关度为 core 或 adjacent 时保留本页。</p></div>
+    <div class="agent-layout">
+      <aside class="agent-principle"><h3>核心设计判断</h3><p>用一句话说明自主性、可控性和任务成功之间最重要的取舍。</p></aside>
+      <div class="matrix" role="table" aria-label="Agent 设计矩阵">
+        <div class="matrix-row" role="row"><b>自主范围与停止条件</b><span>设计：—</span><span>产品取舍：—</span><span class="status unknown">未知</span></div>
+        <div class="matrix-row" role="row"><b>Tool / Skill 与权限</b><span>设计：—</span><span>产品取舍：—</span><span class="status unknown">未知</span></div>
+        <div class="matrix-row" role="row"><b>上下文与记忆</b><span>设计：—</span><span>产品取舍：—</span><span class="status unknown">未知</span></div>
+        <div class="matrix-row" role="row"><b>人类控制与恢复</b><span>设计：—</span><span>产品取舍：—</span><span class="status unknown">未知</span></div>
+        <div class="matrix-row" role="row"><b>评估、成本与可观测性</b><span>设计：—</span><span>产品取舍：—</span><span class="status unknown">未知</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-architecture">
+    <div class="view-title"><h2>能力与架构</h2><p>把用户可见能力映射到运行路径、状态和扩展点。</p></div>
+    <article class="visual-canvas">
+      <h3>能力 / 依赖图</h3>
+      <p class="chart-help">静态图可在 JavaScript 被禁用时阅读；启用脚本后支持滚轮缩放和点击邻居高亮。</p>
+      <!-- Replace the entire SVG below with scripts/bake_graph.js output. Keep id="repo-graph". -->
+      <svg id="repo-graph" class="chart" viewBox="0 0 600 240" role="img" aria-label="示例能力图" xmlns="http://www.w3.org/2000/svg">
+        <line data-s="experience" data-t="runtime" x1="170" y1="120" x2="430" y2="120" stroke="#b8c2d8" stroke-width="2"/>
+        <g class="gnode" data-id="experience" data-title="Experience" transform="translate(170,120)"><circle r="18" fill="#175cff"/><text x="0" y="42" text-anchor="middle">Experience</text></g>
+        <g class="gnode" data-id="runtime" data-title="Runtime" transform="translate(430,120)"><circle r="18" fill="#ff6b35"/><text x="0" y="42" text-anchor="middle">Runtime</text></g>
+      </svg>
+    </article>
+    <article class="visual-canvas">
+      <h3>分层架构</h3>
+      <!-- Replace the entire SVG below with scripts/bake_arch.js output. Keep id="repo-arch". -->
+      <svg id="repo-arch" class="chart" viewBox="0 0 600 220" role="img" aria-label="示例分层架构" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="24" width="560" height="72" rx="3" fill="#175cff" fill-opacity=".08"/><text x="38" y="50" fill="#175cff" font-weight="700">Experience</text>
+        <rect x="20" y="124" width="560" height="72" rx="3" fill="#ff6b35" fill-opacity=".08"/><text x="38" y="150" fill="#ff6b35" font-weight="700">Runtime</text>
+      </svg>
+    </article>
+    <h3>产品能力 → 代码路径</h3><div class="table-wrap"><table><thead><tr><th>产品能力</th><th>用户入口</th><th>运行路径</th><th>状态/依赖</th><th>证据</th></tr></thead><tbody><tr><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr></tbody></table></div>
+  </section>
+
+  <section class="view" id="view-assessment">
+    <div class="view-title"><h2>判断与风险</h2><p>同时呈现支持证据、反证和结论可能失效的条件。</p></div>
+    <div class="assessment-grid">
+      <div><ul class="finding-list"><li><b>优势 / 关键取舍</b><p>判断、证据、产品影响与限制。</p></li><li><b>缺口 / 成熟度风险</b><p>判断、证据、产品影响与限制。</p></li><li><b>战略与生态</b><p>定位、分发、商业化边界与可防御性。</p></li></ul></div>
+      <aside class="risk-block"><h3>最值得警惕的风险</h3><ul><li>用户价值或采用风险。</li><li>Agent 可靠性、成本或权限风险。</li><li>生态、许可或运营依赖。</li></ul><p><span class="status inferred">推断</span> 每项风险都需写明触发条件和缓解方式。</p></aside>
+    </div>
+  </section>
+
+  <section class="view" id="view-borrow">
+    <div class="view-title"><h2>借鉴与方案</h2><p>借鉴的不是界面或功能名，而是经过验证的机制与取舍。</p></div>
+    <ol class="decision-queue"><li><div><b>最值得验证的机制</b><p>用户价值、战略匹配和关键依赖。</p></div><div><b>最小实验</b><p>低成本验证最不确定的假设。</p></div><span class="status inferred">prototype</span></li><li><div><b>值得观察但暂不复制</b><p>说明等待什么证据或能力条件。</p></div><div><b>观察信号</b><p>版本、采用、质量或成本信号。</p></div><span class="status unknown">watch</span></li><li><div><b>明确不做</b><p>说明不匹配的用户、战略或风险。</p></div><div><b>重新评估条件</b><p>什么变化会推翻当前判断。</p></div><span class="status conflicted">skip</span></li></ol>
+    <div class="split"><article class="ruled"><h3>最小可信闭环</h3><p>窄场景、成功信号、评估集与人工兜底。</p></article><article class="ruled"><h3>MVP 不做清单</h3><p>明确延后哪些扩展、自动化和平台能力。</p></article></div>
+  </section>
+
+  <section class="view" id="view-pilot">
+    <div class="view-title"><h2>试点与上线</h2><p>以阶段门控制风险；每次只扩大一个风险维度。</p></div>
+    <div class="stage-path" aria-label="Agent 上线阶段"><div><b>Offline</b><span>冻结任务集</span></div><div><b>Shadow</b><span>观察真实分布</span></div><div><b>Assist</b><span>只生成建议</span></div><div><b>Supervised</b><span>审批后执行</span></div><div><b>Bounded</b><span>有界自主</span></div><div><b>Scale</b><span>扩用户与能力</span></div></div>
+    <div class="table-wrap"><table><thead><tr><th>评测切片</th><th>目标</th><th>关键指标</th><th>失败预算</th><th>负责人</th></tr></thead><tbody>
+      <tr><td>核心 / 边缘 / 对抗 / 恢复</td><td>验证业务闭环与风险边界</td><td>成功、严重错误、干预、成本、延迟、恢复</td><td>替换为场景门槛</td><td>业务 / 产品 / 评测 / 安全 / SRE</td></tr>
+    </tbody></table></div>
+    <div class="split"><article class="ruled"><h3>晋级条件</h3><ul class="tight"><li>相对基线有可观测收益。</li><li>严重错误和策略违规低于预算。</li><li>取消、回滚、接管和重放可用。</li></ul></article><article class="ruled"><h3>Kill Criteria</h3><ul class="tight"><li>发生未阻断的禁止或不可逆动作。</li><li>审核和返工使净价值为负。</li><li>升级使评测基线失效。</li></ul></article></div>
+  </section>
+
+  <section class="view" id="view-evidence">
+    <div class="view-title"><h2>证据与未知</h2><p>让读者知道我们看了什么、没看到什么，以及哪些判断最脆弱。</p></div>
+    <dl class="source-ledger"><dt>仓库快照</dt><dd>URL、commit、日期、分支、目录与版本。</dd><dt>历史与生态</dt><dd>releases、commits、issues、discussions 与外部来源的实际检查范围。</dd><dt>未覆盖范围</dt><dd>不可访问、未检查或超出本次分析范围的来源。</dd></dl>
+    <div class="split"><article class="ruled"><h3>关键未知</h3><ul class="tight"><li><span class="status unknown">未知</span> 会显著改变判断但尚未得到证据的问题。</li></ul></article><article class="ruled"><h3>证据冲突</h3><ul class="tight"><li><span class="status conflicted">冲突</span> 文档、代码或外部来源之间的矛盾。</li></ul></article></div>
+    <h3>来源</h3><ol><li>文件路径、symbol 或 commit-pinned URL；将来源紧贴相关结论。</li></ol>
+  </section>
+</main>
+
+<footer>由 repo-competitive-analysis skill 生成 · 结论按已验证 / 推断 / 未知区分</footer>
+</div>
+</div>
+
+<div id="graph-detail" role="status" aria-live="polite"><h4 id="graph-detail-title">—</h4><div id="graph-detail-body"></div></div>
+
+<!-- Progressive enhancement only. The report remains readable when scripts are blocked. -->
+<script>
+(function(){
+  'use strict';
+  var graphSvg=document.getElementById('repo-graph');
+  if(!graphSvg)return;
+  var graphBox=graphSvg.viewBox&&graphSvg.viewBox.baseVal;
+  if(!graphBox||!graphBox.width)return;
+  var graphView=[graphBox.x,graphBox.y,graphBox.width,graphBox.height];
+  var graphNodes=Array.prototype.slice.call(graphSvg.querySelectorAll('g.gnode'));
+  var graphEdges=Array.prototype.slice.call(graphSvg.querySelectorAll('line[data-s][data-t]'));
+  var graphDetail=document.getElementById('graph-detail');
+  var graphDetailTitle=document.getElementById('graph-detail-title');
+  var graphDetailBody=document.getElementById('graph-detail-body');
+  var graphAdjacency={};
+  graphEdges.forEach(function(edge){
+    var source=edge.getAttribute('data-s'),target=edge.getAttribute('data-t');
+    (graphAdjacency[source]=graphAdjacency[source]||[]).push(target);
+    (graphAdjacency[target]=graphAdjacency[target]||[]).push(source);
+  });
+  function applyGraphView(){graphSvg.setAttribute('viewBox',graphView.join(' '));}
+  function clearGraphHighlight(){
+    graphNodes.forEach(function(node){node.style.opacity='';});
+    graphEdges.forEach(function(edge){edge.style.opacity='';edge.setAttribute('stroke','#b8c2d8');edge.setAttribute('stroke-width','1.4');});
+  }
+  function highlightGraphNode(id){
+    clearGraphHighlight();
+    var neighbors=graphAdjacency[id]||[];
+    graphNodes.forEach(function(node){var nodeId=node.getAttribute('data-id');if(nodeId!==id&&neighbors.indexOf(nodeId)===-1)node.style.opacity='.22';});
+    graphEdges.forEach(function(edge){
+      if(edge.getAttribute('data-s')===id||edge.getAttribute('data-t')===id){edge.setAttribute('stroke','#175cff');edge.setAttribute('stroke-width','2.5');}
+      else edge.style.opacity='.18';
+    });
+    return neighbors;
+  }
+  graphSvg.addEventListener('click',function(event){
+    var node=event.target.closest&&event.target.closest('g.gnode');
+    if(!node){clearGraphHighlight();graphDetail.style.display='none';return;}
+    var id=node.getAttribute('data-id');
+    var neighbors=highlightGraphNode(id);
+    graphDetailTitle.textContent=node.getAttribute('data-title')||id;
+    graphDetailBody.textContent='相邻节点：'+(neighbors.join('、')||'无');
+    graphDetail.style.display='block';
+  });
+  graphSvg.addEventListener('wheel',function(event){
+    event.preventDefault();
+    var bounds=graphSvg.getBoundingClientRect();
+    var ratioX=(event.clientX-bounds.left)/bounds.width;
+    var ratioY=(event.clientY-bounds.top)/bounds.height;
+    var pointX=graphView[0]+ratioX*graphView[2];
+    var pointY=graphView[1]+ratioY*graphView[3];
+    var factor=event.deltaY < 0 ? 0.9 : 1.1;
+    graphView[2]*=factor;graphView[3]*=factor;
+    graphView[0]=pointX-ratioX*graphView[2];graphView[1]=pointY-ratioY*graphView[3];
+    applyGraphView();
+  },{passive:false});
+})();
+</script>
+</body>
+</html>

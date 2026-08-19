@@ -1,0 +1,95 @@
+<svg id="repo-graph" class="chart" role="img" aria-label="Repository capability and dependency graph" viewBox="-288.8 -259.3 607.7 509.5" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+  <title>Repository capability and dependency graph</title>
+  <g class="graph-edges">
+    <line data-s="web-ui" data-t="profiles" data-kind="selects" x1="169.1" y1="-62.7" x2="111.7" y2="67.4" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="cli" data-t="profiles" data-kind="loads" x1="224.1" y1="72.8" x2="111.7" y2="67.4" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="profiles" data-t="cordis" data-kind="composes" x1="111.7" y1="67.4" x2="76.2" y2="172.2" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="cordis" data-t="agent-loop" data-kind="hosts" x1="76.2" y1="172.2" x2="-11.6" y2="53.3" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="agent-loop" data-t="models" data-kind="streams" x1="-11.6" y1="53.3" x2="-127.0" y2="144.0" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="agent-loop" data-t="tools" data-kind="dispatches" x1="-11.6" y1="53.3" x2="-107.9" y2="20.4" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="tools" data-t="approval" data-kind="gates" x1="-107.9" y1="20.4" x2="-197.2" y2="-22.9" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="tools" data-t="sandbox" data-kind="constrains" x1="-107.9" y1="20.4" x2="-157.8" y2="-116.5" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="agent-loop" data-t="session-log" data-kind="records" x1="-11.6" y1="53.3" x2="-50.7" y2="-78.6" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="approval" data-t="session-log" data-kind="records" x1="-197.2" y1="-22.9" x2="-50.7" y2="-78.6" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="tools" data-t="session-log" data-kind="records" x1="-107.9" y1="20.4" x2="-50.7" y2="-78.6" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="session-log" data-t="compaction" data-kind="summarized-by" x1="-50.7" y1="-78.6" x2="-41.7" y2="-203.3" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="session-log" data-t="trajectory" data-kind="projects-to" x1="-50.7" y1="-78.6" x2="76.1" y2="-149.2" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="agent-loop" data-t="subagent" data-kind="delegates" x1="-11.6" y1="53.3" x2="58.5" y2="-37.6" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="extensions" data-t="profiles" data-kind="extends" x1="-21.5" y1="140.6" x2="111.7" y2="67.4" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="extensions" data-t="tools" data-kind="contributes" x1="-21.5" y1="140.6" x2="-107.9" y2="20.4" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="extensions" data-t="models" data-kind="contributes" x1="-21.5" y1="140.6" x2="-127.0" y2="144.0" stroke="#b8c2d8" stroke-width="1.4"/>
+    <line data-s="web-ui" data-t="trajectory" data-kind="renders" x1="169.1" y1="-62.7" x2="76.1" y2="-149.2" stroke="#b8c2d8" stroke-width="1.4"/>
+  </g>
+  <g class="graph-nodes">
+    <g class="gnode" data-id="web-ui" data-title="Web UI" transform="translate(169.1,-62.7)">
+      <circle r="14" fill="#175cff"/>
+      <rect x="-27.2" y="17" width="54.4" height="17" rx="4" fill="#fff" stroke="#c7d0e6"/>
+      <text x="0" y="29" font-size="11" text-anchor="middle" fill="#172033">Web UI</text>
+    </g>
+    <g class="gnode" data-id="cli" data-title="CLI / Headless" transform="translate(224.1,72.8)">
+      <circle r="14" fill="#175cff"/>
+      <rect x="-52.8" y="17" width="105.6" height="17" rx="4" fill="#fff" stroke="#c7d0e6"/>
+      <text x="0" y="29" font-size="11" text-anchor="middle" fill="#172033">CLI / Headless</text>
+    </g>
+    <g class="gnode" data-id="profiles" data-title="Profiles &amp; Bundles" transform="translate(111.7,67.4)">
+      <circle r="14" fill="#607083"/>
+      <rect x="-65.6" y="17" width="131.2" height="17" rx="4" fill="#fff" stroke="#c7d0e6"/>
+      <text x="0" y="29" font-size="11" text-anchor="middle" fill="#172033">Profiles &amp; Bundles</text>
+    </g>
+    <g class="gnode" data-id="cordis" data-title="Cordis Context" transform="translate(76.2,172.2)">
+      <circle r="14" fill="#ff6b35"/>
+      <rect x="-52.8" y="17" width="105.6" height="17" rx="4" fill="#fff" stroke="#c7d0e6"/>
+      <text x="0" y="29" font-size="11" text-anchor="middle" fill="#172033">Cordis Context</text>
+    </g>
+    <g class="gnode" data-id="agent-loop" data-title="Agent Loop" transform="translate(-11.6,53.3)">
+      <circle r="14" fill="#ff6b35"/>
+      <rect x="-40.0" y="17" width="80.0" height="17" rx="4" fill="#fff" stroke="#c7d0e6"/>
+      <text x="0" y="29" font-size="11" text-anchor="middle" fill="#172033">Agent Loop</text>
+    </g>
+    <g class="gnode" data-id="models" data-title="Model Adapters" transform="translate(-127.0,144.0)">
+      <circle r="14" fill="#7c3aed"/>
+      <rect x="-52.8" y="17" width="105.6" height="17" rx="4" fill="#fff" stroke="#c7d0e6"/>
+      <text x="0" y="29" font-size="11" text-anchor="middle" fill="#172033">Model Adapters</text>
+    </g>
+    <g class="gnode" data-id="tools" data-title="Tool Registry" transform="translate(-107.9,20.4)">
+      <circle r="14" fill="#087f5b"/>
+      <rect x="-49.6" y="17" width="99.2" height="17" rx="4" fill="#fff" stroke="#c7d0e6"/>
+      <text x="0" y="29" font-size="11" text-anchor="middle" fill="#172033">Tool Registry</text>
+    </g>
+    <g class="gnode" data-id="approval" data-title="Approval Gate" transform="translate(-197.2,-22.9)">
+      <circle r="14" fill="#b42318"/>
+      <rect x="-49.6" y="17" width="99.2" height="17" rx="4" fill="#fff" stroke="#c7d0e6"/>
+      <text x="0" y="29" font-size="11" text-anchor="middle" fill="#172033">Approval Gate</text>
+    </g>
+    <g class="gnode" data-id="sandbox" data-title="Sandbox Policy" transform="translate(-157.8,-116.5)">
+      <circle r="14" fill="#b42318"/>
+      <rect x="-52.8" y="17" width="105.6" height="17" rx="4" fill="#fff" stroke="#c7d0e6"/>
+      <text x="0" y="29" font-size="11" text-anchor="middle" fill="#172033">Sandbox Policy</text>
+    </g>
+    <g class="gnode" data-id="session-log" data-title="Session Event Log" transform="translate(-50.7,-78.6)">
+      <circle r="14" fill="#0086b3"/>
+      <rect x="-62.4" y="17" width="124.8" height="17" rx="4" fill="#fff" stroke="#c7d0e6"/>
+      <text x="0" y="29" font-size="11" text-anchor="middle" fill="#172033">Session Event Log</text>
+    </g>
+    <g class="gnode" data-id="compaction" data-title="Compaction &amp; Retry" transform="translate(-41.7,-203.3)">
+      <circle r="14" fill="#0086b3"/>
+      <rect x="-65.6" y="17" width="131.2" height="17" rx="4" fill="#fff" stroke="#c7d0e6"/>
+      <text x="0" y="29" font-size="11" text-anchor="middle" fill="#172033">Compaction &amp; Retry</text>
+    </g>
+    <g class="gnode" data-id="subagent" data-title="Subagent / Workflow" transform="translate(58.5,-37.6)">
+      <circle r="14" fill="#ff6b35"/>
+      <rect x="-68.8" y="17" width="137.6" height="17" rx="4" fill="#fff" stroke="#c7d0e6"/>
+      <text x="0" y="29" font-size="11" text-anchor="middle" fill="#172033">Subagent / Workflow</text>
+    </g>
+    <g class="gnode" data-id="trajectory" data-title="Trajectory View" transform="translate(76.1,-149.2)">
+      <circle r="14" fill="#175cff"/>
+      <rect x="-56.0" y="17" width="112.0" height="17" rx="4" fill="#fff" stroke="#c7d0e6"/>
+      <text x="0" y="29" font-size="11" text-anchor="middle" fill="#172033">Trajectory View</text>
+    </g>
+    <g class="gnode" data-id="extensions" data-title="Skills / MCP / Plugins" transform="translate(-21.5,140.6)">
+      <circle r="14" fill="#c2417d"/>
+      <rect x="-78.4" y="17" width="156.8" height="17" rx="4" fill="#fff" stroke="#c7d0e6"/>
+      <text x="0" y="29" font-size="11" text-anchor="middle" fill="#172033">Skills / MCP / Plugins</text>
+    </g>
+  </g>
+</svg>

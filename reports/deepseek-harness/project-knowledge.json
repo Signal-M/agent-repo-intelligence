@@ -1,0 +1,845 @@
+{
+  "meta": {
+    "repo": "deepseek-ai/deepseek-harness",
+    "url": "https://github.com/deepseek-ai/deepseek-harness",
+    "commit": "47f943859bef60e4160492346772ded9b24f765a",
+    "analyzedAt": "2026-08-20",
+    "mode": "standard",
+    "decisionGoal": "adopt",
+    "productTypes": [
+      "agent-application",
+      "agent-framework",
+      "developer-platform"
+    ],
+    "agentRelevance": "core",
+    "scope": [
+      "README.md and user documentation",
+      "docs/architecture.md and extension cookbooks",
+      "apps/cli and agent preset configuration",
+      "packages/core/agent-loop and packages/core/tools",
+      "sandbox, approval, compaction, retry, session and UI packages",
+      "GitHub releases and selected discussions observed on 2026-08-14"
+    ]
+  },
+  "graph": {
+    "nodes": [
+      {"id": "web-ui", "title": "Web UI", "category": "interface"},
+      {"id": "cli", "title": "CLI / Headless", "category": "interface"},
+      {"id": "profiles", "title": "Profiles & Bundles", "category": "concept"},
+      {"id": "cordis", "title": "Cordis Context", "category": "runtime"},
+      {"id": "agent-loop", "title": "Agent Loop", "category": "runtime"},
+      {"id": "models", "title": "Model Adapters", "category": "model"},
+      {"id": "tools", "title": "Tool Registry", "category": "tool"},
+      {"id": "approval", "title": "Approval Gate", "category": "control"},
+      {"id": "sandbox", "title": "Sandbox Policy", "category": "control"},
+      {"id": "session-log", "title": "Session Event Log", "category": "data"},
+      {"id": "compaction", "title": "Compaction & Retry", "category": "data"},
+      {"id": "subagent", "title": "Subagent / Workflow", "category": "runtime"},
+      {"id": "trajectory", "title": "Trajectory View", "category": "interface"},
+      {"id": "extensions", "title": "Skills / MCP / Plugins", "category": "integration"}
+    ],
+    "edges": [
+      {"s": "web-ui", "t": "profiles", "kind": "selects"},
+      {"s": "cli", "t": "profiles", "kind": "loads"},
+      {"s": "profiles", "t": "cordis", "kind": "composes"},
+      {"s": "cordis", "t": "agent-loop", "kind": "hosts"},
+      {"s": "agent-loop", "t": "models", "kind": "streams"},
+      {"s": "agent-loop", "t": "tools", "kind": "dispatches"},
+      {"s": "tools", "t": "approval", "kind": "gates"},
+      {"s": "tools", "t": "sandbox", "kind": "constrains"},
+      {"s": "agent-loop", "t": "session-log", "kind": "records"},
+      {"s": "approval", "t": "session-log", "kind": "records"},
+      {"s": "tools", "t": "session-log", "kind": "records"},
+      {"s": "session-log", "t": "compaction", "kind": "summarized-by"},
+      {"s": "session-log", "t": "trajectory", "kind": "projects-to"},
+      {"s": "agent-loop", "t": "subagent", "kind": "delegates"},
+      {"s": "extensions", "t": "profiles", "kind": "extends"},
+      {"s": "extensions", "t": "tools", "kind": "contributes"},
+      {"s": "extensions", "t": "models", "kind": "contributes"},
+      {"s": "web-ui", "t": "trajectory", "kind": "renders"}
+    ]
+  },
+  "architecture": {
+    "layers": [
+      {
+        "label": "Experience · 用户界面与接入",
+        "boxes": [
+          {"id": "arch-web", "title": "Web Workspace", "sub": "会话、设置、审批"},
+          {"id": "arch-cli", "title": "CLI / Headless", "sub": "启动、配置、自动化"},
+          {"id": "arch-trajectory", "title": "Trajectory UI", "sub": "步骤、工具、成本"}
+        ]
+      },
+      {
+        "label": "Composition · 产品装配",
+        "boxes": [
+          {"id": "arch-profile", "title": "Profiles", "sub": "产品形态"},
+          {"id": "arch-bundle", "title": "Bundles", "sub": "插件组合"},
+          {"id": "arch-preset", "title": "Agent Presets", "sub": "角色与能力包"},
+          {"id": "arch-cordis", "title": "Cordis", "sub": "服务、事件、副作用"}
+        ]
+      },
+      {
+        "label": "Runtime · Agent 执行循环",
+        "boxes": [
+          {"id": "arch-loop", "title": "Agent Loop", "sub": "Turn / Step"},
+          {"id": "arch-model", "title": "Model Adapter", "sub": "流式请求与重试"},
+          {"id": "arch-tool", "title": "Tool Scheduler", "sub": "并发与独占屏障"},
+          {"id": "arch-subagent", "title": "Subagent / Workflow", "sub": "委派与目标"}
+        ]
+      },
+      {
+        "label": "Control · 权限与信任边界",
+        "boxes": [
+          {"id": "arch-policy", "title": "Tool Policy", "sub": "allow / deny / ask"},
+          {"id": "arch-approval", "title": "User Approval", "sub": "fail closed"},
+          {"id": "arch-sandbox", "title": "Sandbox Policy", "sub": "工作区写入"},
+          {"id": "arch-cancel", "title": "Cancel / Timeout", "sub": "终止与恢复"}
+        ]
+      },
+      {
+        "label": "State & Extension · 状态与生态",
+        "boxes": [
+          {"id": "arch-session", "title": "Session Log", "sub": "模型上下文事实源"},
+          {"id": "arch-compact", "title": "Compaction", "sub": "摘要与结果裁剪"},
+          {"id": "arch-skills", "title": "Skills / MCP", "sub": "外部能力"},
+          {"id": "arch-telemetry", "title": "Telemetry", "sub": "可选原始导出"}
+        ]
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "F-01",
+      "lens": "product",
+      "claim": "DeepSeek Harness 同时提供本地 Web Agent 产品、CLI/Headless 入口和可扩展 Agent Runtime。",
+      "status": "verified",
+      "confidence": "high",
+      "evidence": [
+        {
+          "source": "repository",
+          "location": "README.md:5-23",
+          "note": "README 将 dsh 定义为开源 agent harness，并提供 npx Web 启动路径。"
+        },
+        {
+          "source": "repository",
+          "location": "apps/cli/README.md:5-43",
+          "note": "CLI 文档列出 web、headless profiles 与插件管理。"
+        }
+      ],
+      "counterevidence": [],
+      "implication": "产品不是单一 Coding Agent，而是试图同时占据终端产品和开发平台两个层级。"
+    },
+    {
+      "id": "F-02",
+      "lens": "architecture",
+      "claim": "模型、工具、Session Log 和 Agent Loop 都通过 Cordis 插件服务与事件组合，Profile/Bundle 决定产品装配。",
+      "status": "verified",
+      "confidence": "high",
+      "evidence": [
+        {
+          "source": "repository",
+          "location": "docs/architecture.md:9-37",
+          "note": "架构文档明确说明插件贡献服务、类型化事件和可逆副作用，各核心组件均可替换。"
+        }
+      ],
+      "counterevidence": [],
+      "implication": "可组合性和替换性是核心设计目标，但也提高依赖治理、配置理解与测试成本。"
+    },
+    {
+      "id": "F-03",
+      "lens": "agent",
+      "claim": "持久化 Session Log 是模型上下文的事实来源，模型可见内容必须被记录。",
+      "status": "verified",
+      "confidence": "high",
+      "evidence": [
+        {
+          "source": "repository",
+          "location": "docs/architecture.md:63-102",
+          "note": "文档给出完整 Turn 流，并把 durable session log 定义为模型上下文来源。"
+        }
+      ],
+      "counterevidence": [],
+      "implication": "聊天、审计、恢复和 UI 投影可以共享一套事件语义，是最具迁移价值的机制。"
+    },
+    {
+      "id": "F-04",
+      "lens": "agent",
+      "claim": "Agent Loop 以 Turn/Step 推进，处理模型流、工具调用、错误重试、终止工具和 Inbox 续跑。",
+      "status": "verified",
+      "confidence": "high",
+      "evidence": [
+        {
+          "source": "repository",
+          "location": "packages/core/agent-loop/src/agent.ts:225-400",
+          "note": "主执行路径记录 Turn/Step 事件，调用模型并根据工具和 Inbox 状态决定继续或结束。"
+        }
+      ],
+      "counterevidence": [],
+      "implication": "它是具备可恢复运行语义的 Agent Runtime，而不只是工具调用包装器。"
+    },
+    {
+      "id": "F-05",
+      "lens": "agent",
+      "claim": "工具支持 Native、Code 和 Both 三种模型呈现方式，并实现有界并发与独占工具屏障。",
+      "status": "verified",
+      "confidence": "high",
+      "evidence": [
+        {
+          "source": "repository",
+          "location": "packages/core/tools/src/index.ts:582-711",
+          "note": "工具注册表定义代码模式和原生模式的暴露策略。"
+        },
+        {
+          "source": "repository",
+          "location": "packages/core/agent-loop/src/tool-calls.ts:1-100",
+          "note": "调度器实现 rolling pool、exclusive barrier 和稳定结果顺序。"
+        }
+      ],
+      "counterevidence": [],
+      "implication": "Code Mode 可能减少多工具任务的模型往返，但会引入额外 Schema 和调试负担。"
+    },
+    {
+      "id": "F-06",
+      "lens": "trust",
+      "claim": "工具执行经过 allow/deny/ask 策略、用户审批和单调收紧 guard；审批不可用时默认拒绝。",
+      "status": "verified",
+      "confidence": "high",
+      "evidence": [
+        {
+          "source": "repository",
+          "location": "packages/core/tools/src/index.ts:1468-1506",
+          "note": "工具执行路径先应用策略和审批，再经过 monotonic guard。"
+        },
+        {
+          "source": "repository",
+          "location": "packages/interaction/user-approval/src/index.ts:257-343",
+          "note": "审批请求和结果写入会话，缺少审批处理器时 fail closed。"
+        }
+      ],
+      "counterevidence": [],
+      "implication": "设计选择控制与可审计性优先于完全无监督吞吐。"
+    },
+    {
+      "id": "F-07",
+      "lens": "security",
+      "claim": "基础组合默认 workspace-write，但读取、网络与进程可见性并未被完整隔离；Web 入口当前限制为 loopback。",
+      "status": "verified",
+      "confidence": "high",
+      "evidence": [
+        {
+          "source": "repository",
+          "location": "apps/cli/reference/README.md:64-80",
+          "note": "CLI 文档说明默认 workspace-write 及未受限的读取、网络和进程可见性。"
+        },
+        {
+          "source": "repository",
+          "location": "packages/host/webserver/README.md:5-21",
+          "note": "Web server 文档说明非 loopback 缺少 TLS、认证和 Origin 策略，CLI 当前拒绝 0.0.0.0。"
+        }
+      ],
+      "counterevidence": [],
+      "implication": "默认配置适合本地开发者工具，不应被误认为企业多租户隔离方案。"
+    },
+    {
+      "id": "F-08",
+      "lens": "reliability",
+      "claim": "运行时包含自动压缩、工具结果裁剪、Context Overflow 恢复以及带抖动退避的模型重试。",
+      "status": "verified",
+      "confidence": "high",
+      "evidence": [
+        {
+          "source": "repository",
+          "location": "packages/compaction/compaction-basic/src/index.ts:132-320",
+          "note": "压缩插件在 Step 前判断阈值，先裁剪工具结果并保留必要上下文尾部。"
+        },
+        {
+          "source": "repository",
+          "location": "packages/llm/llm-retry/src/index.ts:93-225",
+          "note": "模型重试实现提供商路由、退避、抖动和取消。"
+        }
+      ],
+      "counterevidence": [],
+      "implication": "项目已处理长任务的运行可靠性，但尚缺少任务级成功率证据。"
+    },
+    {
+      "id": "F-09",
+      "lens": "experience",
+      "claim": "Web 产品让用户配置模型、选择 Workspace、创建 Session，并在同一界面查看工具与子工具轨迹。",
+      "status": "verified",
+      "confidence": "high",
+      "evidence": [
+        {
+          "source": "repository",
+          "location": "docs/user/guide/index.md:5-23",
+          "note": "用户指南给出模型、工作区和会话的首次使用路径。"
+        },
+        {
+          "source": "repository",
+          "location": "packages/client/ui-trajectory/README.md:1-16",
+          "note": "Trajectory UI 展示步骤、工具、Token、耗时和输入输出。"
+        }
+      ],
+      "counterevidence": [],
+      "implication": "它提供了比聊天气泡更适合 Agent 调试和监督的产品界面。"
+    },
+    {
+      "id": "F-10",
+      "lens": "maturity",
+      "claim": "该项目仍处于 Developer Preview，明确允许破坏性变更，且所检查日期没有正式 GitHub Release。",
+      "status": "verified",
+      "confidence": "high",
+      "evidence": [
+        {
+          "source": "repository",
+          "location": "README.md:5-23",
+          "note": "README 明确标注 Developer Preview 和 breaking compatibility changes。"
+        },
+        {
+          "source": "GitHub metadata",
+          "location": "https://github.com/deepseek-ai/deepseek-harness/releases",
+          "note": "2026-08-14 检查时 Releases 页面没有正式发布项。"
+        }
+      ],
+      "counterevidence": [],
+      "implication": "现阶段更适合作为参考架构和实验平台，而不是低风险生产底座。"
+    },
+    {
+      "id": "F-11",
+      "lens": "memory",
+      "claim": "在已检查的一方 packages、文档与配置范围内，未确认完整的长期语义记忆或用户画像模块。",
+      "status": "unknown",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "source": "repository search",
+          "location": "packages, docs and examples inspected on 2026-08-14",
+          "note": "观察到 Session、Goal、Compaction 和 MCP memory 示例，但未找到可确认的一方长期语义记忆路径。"
+        }
+      ],
+      "counterevidence": [
+        "示例或第三方插件可能提供本次检查未覆盖的记忆能力。"
+      ],
+      "implication": "不能把持久会话与上下文压缩等同于跨会话长期记忆。"
+    },
+    {
+      "id": "F-12",
+      "lens": "evaluation",
+      "claim": "仓库展示了丰富的正确性测试基础设施，但在检查范围内未发现系统性的 Agent 任务质量基准。",
+      "status": "unknown",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "source": "repository",
+          "location": "BENCHMARK.md:1-3",
+          "note": "Benchmark 文档只说明 SDK benchmark task 的运行入口，没有给出任务集、基线或结果。"
+        }
+      ],
+      "counterevidence": [
+        "仓库存在大量单元、E2E、性能和压力测试，它们能证明实现正确性，但不能替代任务效果评测。"
+      ],
+      "implication": "目前不能根据工程测试数量推断任务完成率、成本优势或模型协同收益。"
+    },
+    {
+      "id": "F-13",
+      "lens": "ecosystem",
+      "claim": "插件、Skills、MCP、模型适配器和 UI 扩展共同构成潜在生态入口。",
+      "status": "verified",
+      "confidence": "high",
+      "evidence": [
+        {
+          "source": "repository",
+          "location": "docs/cookbook/extension-cookbook.md:7-129",
+          "note": "扩展手册映射工具、Hook、UI、MCP、Skills、模型适配器和热更新入口。"
+        }
+      ],
+      "counterevidence": [],
+      "implication": "平台扩张路径清楚，但真实第三方开发者留存和兼容性尚未验证。"
+    },
+    {
+      "id": "F-14",
+      "lens": "strategy",
+      "claim": "DeepSeek 模型协同、Cordis 组合机制和事件契约可能形成差异化，但当前没有证据确认可持续壁垒。",
+      "status": "unknown",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "source": "analyst synthesis",
+          "location": "architecture, adapters, distribution and community signals",
+          "note": "设计和分发入口存在，但没有跨产品结果、迁移成本、生态留存或商业化证据。"
+        }
+      ],
+      "counterevidence": [],
+      "implication": "应把它视为有潜力的战略楔子，而不是已形成的 moat。"
+    },
+    {
+      "id": "F-15",
+      "lens": "risk",
+      "claim": "早期社区报告显示 Code Mode 参数设计和第三方插件 Schema 可能产生高影响故障。",
+      "status": "inferred",
+      "confidence": "low",
+      "evidence": [
+        {
+          "source": "community report",
+          "location": "https://github.com/deepseek-ai/deepseek-harness/discussions/558",
+          "note": "一位用户报告 Code Mode 描述参数引发重复循环。"
+        },
+        {
+          "source": "community report",
+          "location": "https://github.com/deepseek-ai/deepseek-harness/discussions/297",
+          "note": "一位用户报告第三方插件 Schema 错误影响模型请求。"
+        }
+      ],
+      "counterevidence": [
+        "这些是单个社区报告，且可能针对比本次代码快照更新的 rc 版本，不能代表普遍故障率。"
+      ],
+      "implication": "插件与 Code Mode 上线前需要隔离、Schema 验证和真实任务回归集。"
+    }
+  ],
+  "coreModules": [
+    {
+      "id": "packages/core/agent-loop/src/agent.ts",
+      "role": "拥有 Turn/Step 执行循环、模型流与停止条件",
+      "importance": "high",
+      "signals": ["user-path", "runtime-centrality", "state-transition"],
+      "evidenceIds": ["F-03", "F-04"]
+    },
+    {
+      "id": "packages/core/tools/src/index.ts",
+      "role": "定义工具注册、呈现模式、策略和执行边界",
+      "importance": "high",
+      "signals": ["user-path", "policy-owner", "extension-boundary"],
+      "evidenceIds": ["F-05", "F-06"]
+    },
+    {
+      "id": "packages/interaction/user-approval/src/index.ts",
+      "role": "实现 Human-in-the-loop 审批及持久事件",
+      "importance": "high",
+      "signals": ["control-boundary", "state-owner"],
+      "evidenceIds": ["F-06"]
+    },
+    {
+      "id": "packages/sandbox/sandbox-policy/src/index.ts",
+      "role": "解析每次工具调用的沙箱模式与工作区边界",
+      "importance": "high",
+      "signals": ["trust-boundary", "policy-owner"],
+      "evidenceIds": ["F-07"]
+    },
+    {
+      "id": "packages/compaction/compaction-basic/src/index.ts",
+      "role": "控制长上下文压缩、结果裁剪与 Overflow 恢复",
+      "importance": "high",
+      "signals": ["reliability", "context-owner"],
+      "evidenceIds": ["F-08"]
+    },
+    {
+      "id": "apps/cli/config/agent-presets",
+      "role": "把 Persona、工具、权限和多 Agent 能力打包为产品预设",
+      "importance": "high",
+      "signals": ["product-boundary", "configuration", "extension-leverage"],
+      "evidenceIds": ["F-01", "F-13"]
+    },
+    {
+      "id": "packages/client/ui-trajectory",
+      "role": "将事件日志投影为用户可理解的执行轨迹",
+      "importance": "medium",
+      "signals": ["user-feedback", "observability"],
+      "evidenceIds": ["F-09"]
+    }
+  ],
+  "borrowable": [
+    {
+      "idea": "事件溯源式模型上下文与会话审计",
+      "userValue": "支持恢复、重放、解释和统一 UI 投影",
+      "strategicFit": "high",
+      "dependencies": ["稳定事件词汇", "投影与迁移机制", "日志隐私策略"],
+      "cost": "medium",
+      "risk": "事件版本治理和存储复杂度",
+      "adaptation": "复制“模型可见即记录”的原则，不复制全部 Cordis 插件层。",
+      "experiment": "记录一个完整 Turn，并从事件日志重建完全一致的下一次模型请求。",
+      "decision": "adopt",
+      "evidenceIds": ["F-03", "F-04"]
+    },
+    {
+      "idea": "单调收紧的工具权限与审批门",
+      "userValue": "减少权限覆盖错误并提升操作可审计性",
+      "strategicFit": "high",
+      "dependencies": ["工具副作用分类", "执行前策略钩子", "审批事件存储"],
+      "cost": "medium",
+      "risk": "过度询问造成审批疲劳",
+      "adaptation": "先覆盖写文件和 Shell 等高风险工具，避免为每个低风险读取增加摩擦。",
+      "experiment": "对两类副作用工具启用 ask，测量拦截率、拒绝率和任务完成率。",
+      "decision": "adopt",
+      "evidenceIds": ["F-06", "F-07"]
+    },
+    {
+      "idea": "Code Mode 多工具组合",
+      "userValue": "可能降低模型往返、延迟和 Token 成本",
+      "strategicFit": "high",
+      "dependencies": ["强类型工具", "规范化输出", "受限代码运行时", "Schema 回归集"],
+      "cost": "high",
+      "risk": "参数重复、循环失败和调试成本上升",
+      "adaptation": "作为可切换实验模式，与 Native Tool Calling 并存。",
+      "experiment": "在 30 个多工具任务上 A/B 比较成功率、往返数、成本和恢复次数。",
+      "decision": "prototype",
+      "evidenceIds": ["F-05", "F-15"]
+    },
+    {
+      "idea": "Agent Preset 能力产品包",
+      "userValue": "让用户按任务选择角色、工具、权限和工作流，而不是逐项配置",
+      "strategicFit": "medium",
+      "dependencies": ["版本化配置", "Preset 迁移", "能力兼容性校验"],
+      "cost": "medium",
+      "risk": "复制式配置漂移和选项复杂度",
+      "adaptation": "先做少量官方任务包，不开放任意组合市场。",
+      "experiment": "提供研究与编码两个预设，比较首次成功时间和配置放弃率。",
+      "decision": "prototype",
+      "evidenceIds": ["F-01", "F-13"]
+    },
+    {
+      "idea": "全组件插件化与完整多 Agent 工作流",
+      "userValue": "长期可形成开发者生态和复杂任务编排能力",
+      "strategicFit": "medium",
+      "dependencies": ["稳定插件 API", "隔离与兼容测试", "单 Agent 质量基线"],
+      "cost": "high",
+      "risk": "学习曲线、故障放大和平台建设早于用户价值",
+      "adaptation": "只先开放模型、工具和审计三个稳定边界。",
+      "experiment": "观察第三方插件升级兼容率与实际复用量，再决定是否扩大扩展面。",
+      "decision": "watch",
+      "evidenceIds": ["F-02", "F-13", "F-15"]
+    }
+  ],
+  "decisionContext": {
+    "decisionGoal": "adopt",
+    "decision": "判断一家互联网公司应否采用 DeepSeek Harness，以及适合从哪个内部业务场景开始试点",
+    "organization": "假设为具备平台研发、业务研发和安全团队的中大型互联网公司；具体规模与制度未知",
+    "workflow": "优先评估内部研发仓库诊断、代码修改与受监督工具执行；同时检查共享平台和外部服务扩展可能",
+    "users": [
+      "软件工程师",
+      "研发效能或 Agent 平台团队",
+      "工程管理者",
+      "安全与基础设施运营者"
+    ],
+    "constraints": [
+      "试点阶段不允许自动合并或直接发布生产",
+      "所有有副作用操作必须可审计、可取消并经过代码评审",
+      "不得根据仓库热度推断内部 ROI 或用户采用",
+      "Developer Preview 版本必须锁定并经过升级回归"
+    ],
+    "assumptions": [
+      "首个场景只处理内部代码与测试环境，不接触外部客户账户和高敏生产数据",
+      "组织能够提供隔离运行环境、代码评审和评测负责人",
+      "当前人工流程的任务量、耗时、成本和缺陷基线尚未提供",
+      "共享平台、外部客户和监管场景仅依据仓库能力判断阻断项，不作生产采用承诺"
+    ],
+    "currentBaseline": {
+      "status": "unknown",
+      "metrics": [],
+      "requiredInputs": [
+        "每月符合条件的研发任务量",
+        "人工处理时间与综合人力成本",
+        "当前一次通过率、返工率和严重缺陷率",
+        "允许的延迟、成本和人工审核负担"
+      ]
+    }
+  },
+  "businessScenarios": [
+    {
+      "id": "internal-coding",
+      "name": "内部研发 Coding Agent",
+      "actor": "软件工程师",
+      "workflow": "在隔离工作区中诊断仓库、修改代码、运行命令，并由工程师评审结果",
+      "autonomyLevel": "supervised-execute",
+      "status": "conditional",
+      "decision": "prototype",
+      "decisiveConstraint": "缺少代表性任务成功率、严重错误率和人工干预基线",
+      "conditions": [
+        "所有修改保持在可回滚分支或工作区",
+        "禁止自动合并、发布和访问未批准凭证",
+        "写文件和 Shell 操作保留策略门、审批和完整轨迹"
+      ],
+      "blockers": [
+        "尚未建立覆盖核心、边缘、对抗和恢复任务的内部评测集",
+        "当前业务基线和风险调整后的经济性未知"
+      ],
+      "evidenceIds": ["F-01", "F-03", "F-04", "F-06", "F-08", "F-09", "F-10", "F-12"]
+    },
+    {
+      "id": "internal-platform",
+      "name": "内部共享 Agent 平台",
+      "actor": "研发效能与 Agent 平台团队",
+      "workflow": "为多个研发团队提供统一模型、工具、预设、权限和执行轨迹",
+      "autonomyLevel": "supervised-execute",
+      "status": "experimental",
+      "decision": "prototype",
+      "decisiveConstraint": "插件隔离、版本兼容、组织身份和多团队治理尚未形成生产证据",
+      "conditions": [
+        "先限定为单团队和少量官方插件",
+        "建立版本锁定、插件 Schema 校验、升级回归和紧急停用机制"
+      ],
+      "blockers": [
+        "企业身份和授权集成未在检查范围内确认",
+        "Developer Preview 和插件故障半径不适合直接标准化为公司级平台"
+      ],
+      "evidenceIds": ["F-02", "F-07", "F-10", "F-13", "F-15"]
+    },
+    {
+      "id": "customer-facing",
+      "name": "面向外部客户的生产 Agent",
+      "actor": "外部客户与客服运营者",
+      "workflow": "Agent 读取客户上下文并调用业务系统完成有状态服务动作",
+      "autonomyLevel": "assist",
+      "status": "not-fit",
+      "decision": "watch",
+      "decisiveConstraint": "当前证据不足以支持身份、多租户、SLA、数据治理和高影响动作责任边界",
+      "conditions": [
+        "只有在独立企业控制层、租户隔离和业务审批完成后才重新评估"
+      ],
+      "blockers": [
+        "Web 形态定位于本地 loopback 使用而非对外服务",
+        "客户数据与业务动作所需的企业治理未被仓库证明"
+      ],
+      "evidenceIds": ["F-07", "F-10", "F-12", "F-14"]
+    },
+    {
+      "id": "regulated-execution",
+      "name": "监管或高风险自动执行",
+      "actor": "金融、医疗或高影响业务操作员",
+      "workflow": "Agent 对敏感记录、资金、资格或不可逆业务状态执行动作",
+      "autonomyLevel": "manual",
+      "status": "not-fit",
+      "decision": "reject",
+      "decisiveConstraint": "高影响责任、合规和数据边界属于硬门槛，不能由本地开发工具能力替代",
+      "conditions": [
+        "未来必须通过独立安全、合规、模型风险和运营审查后才能重新评估"
+      ],
+      "blockers": [
+        "缺少面向该场景的合规、审计、隔离和任务质量证据",
+        "默认 workspace-write 及外部可见边界不满足高风险生产假设"
+      ],
+      "evidenceIds": ["F-06", "F-07", "F-10", "F-12"]
+    }
+  ],
+  "readinessGates": [
+    {
+      "id": "value",
+      "label": "有价值且高频的问题",
+      "status": "unknown",
+      "blocker": "组织的研发任务量、人工耗时、返工和缺陷基线未提供",
+      "owner": "研发效能业务负责人",
+      "nextProof": "抽样两周真实任务并建立人工周期、质量和成本基线",
+      "maxAutonomy": "assist",
+      "evidenceIds": []
+    },
+    {
+      "id": "agent-fit",
+      "label": "任务适合 Agent 化",
+      "status": "pass",
+      "blocker": "仅对需要仓库理解、工具选择和多步执行的研发任务成立",
+      "owner": "Agent 产品负责人",
+      "nextProof": "区分规则可解决任务与真正需要推理和工具编排的任务",
+      "maxAutonomy": "supervised-execute",
+      "evidenceIds": ["F-01", "F-04", "F-05"]
+    },
+    {
+      "id": "data-tools",
+      "label": "数据与工具准备度",
+      "status": "conditional",
+      "blocker": "工具可扩展，但默认读取、网络和进程边界并非完整企业隔离",
+      "owner": "平台与安全团队",
+      "nextProof": "在隔离工作区验证工具 allowlist、网络出口、凭证范围、幂等和取消",
+      "maxAutonomy": "supervised-execute",
+      "evidenceIds": ["F-05", "F-07", "F-13"]
+    },
+    {
+      "id": "verifiability",
+      "label": "结果可验证与完成契约",
+      "status": "conditional",
+      "blocker": "事件和轨迹可审计，但任务级成功定义和回归基线仍缺失",
+      "owner": "评测负责人",
+      "nextProof": "为每类任务定义验收器、禁止动作、停止条件和人工裁决规则",
+      "maxAutonomy": "supervised-execute",
+      "evidenceIds": ["F-03", "F-04", "F-09", "F-12"]
+    },
+    {
+      "id": "trust",
+      "label": "信任、权限与人工控制",
+      "status": "conditional",
+      "blocker": "工具策略和审批机制较强，但持续授权、企业身份和默认隔离仍不足",
+      "owner": "安全与 Agent 产品负责人",
+      "nextProof": "验证最小权限、审批疲劳、拒绝不可覆盖、回滚和人工接管路径",
+      "maxAutonomy": "supervised-execute",
+      "evidenceIds": ["F-06", "F-07", "F-09"]
+    },
+    {
+      "id": "reliability",
+      "label": "可靠性与生产运营",
+      "status": "conditional",
+      "blocker": "具备压缩、重试和取消等机制，但版本早期且缺少业务任务质量证据",
+      "owner": "Agent 平台与 SRE",
+      "nextProof": "冻结版本并执行超时、部分副作用、插件失效、恢复和升级回归测试",
+      "maxAutonomy": "supervised-execute",
+      "evidenceIds": ["F-08", "F-10", "F-12", "F-15"]
+    },
+    {
+      "id": "economics-org",
+      "label": "经济性与组织采用",
+      "status": "unknown",
+      "blocker": "没有任务量、人力、审核、模型、运维和事故成本输入，也没有明确长期运营 RACI",
+      "owner": "业务负责人、财务伙伴与平台负责人",
+      "nextProof": "建立 downside/base/upside TCO，并确认产品、评测、工具、数据、安全和事故责任人",
+      "maxAutonomy": "assist",
+      "evidenceIds": ["F-10", "F-12", "F-14"]
+    }
+  ],
+  "alternatives": [
+    {
+      "option": "adopt-upstream",
+      "decision": "prototype",
+      "rationale": "用于内部受监督研发试点可以快速获得完整 Runtime，但必须锁定版本并限制扩展面。"
+    },
+    {
+      "option": "borrow-patterns",
+      "decision": "adopt",
+      "rationale": "Session Log、单调收紧权限和 Trajectory 可独立迁移，风险低于采用完整平台。"
+    },
+    {
+      "option": "fork",
+      "decision": "watch",
+      "rationale": "除非组织明确愿意承担上游合并、安全响应和插件兼容责任，否则不应过早分叉。"
+    },
+    {
+      "option": "build-internally",
+      "decision": "prototype",
+      "rationale": "只在已有统一 Agent 平台战略和关键差异化需求时有意义，首版应借鉴少数稳定机制。"
+    },
+    {
+      "option": "deterministic-automation",
+      "decision": "adopt",
+      "rationale": "规则明确、可验证和高风险的子任务应优先保留确定性实现。"
+    }
+  ],
+  "economics": {
+    "status": "unknown",
+    "currency": "CNY",
+    "horizonMonths": 12,
+    "requiredInputs": [
+      "年度或月度符合条件的任务量",
+      "可自动化任务占比和预期使用率",
+      "每任务人工耗时、节省分钟数与综合人力成本",
+      "每任务模型、搜索、工具、存储和网络成本",
+      "人工审核比例、审核时间和审核者成本",
+      "集成、安全、评测、培训和维护固定成本",
+      "严重错误概率、平均影响和返工成本"
+    ],
+    "scenarios": []
+  },
+  "enterpriseReadiness": [
+    {
+      "domain": "identity-and-authorization",
+      "status": "partial",
+      "gap": "本地产品具备 Agent 权限和审批，但组织级 SSO、RBAC 和授权生命周期未确认",
+      "control": "试点限定为命名用户和隔离环境，外层网关承担身份与访问控制",
+      "owner": "身份平台与安全团队",
+      "evidenceIds": ["F-06", "F-07"]
+    },
+    {
+      "domain": "tenant-and-data-isolation",
+      "status": "not-ready",
+      "gap": "没有证据支持共享多租户、客户数据隔离和跨会话数据治理",
+      "control": "仅允许单团队、单工作区、无客户敏感数据的试点",
+      "owner": "平台安全与数据治理",
+      "evidenceIds": ["F-07", "F-10"]
+    },
+    {
+      "domain": "secrets-and-tool-execution",
+      "status": "partial",
+      "gap": "模型凭证有 redacted 设计，工具策略存在，但网络、进程和插件执行仍需外部控制",
+      "control": "采用短期凭证、工具 allowlist、网络出口限制和插件签入审查",
+      "owner": "平台与应用安全",
+      "evidenceIds": ["F-05", "F-06", "F-07", "F-13"]
+    },
+    {
+      "domain": "audit-and-action-provenance",
+      "status": "partial",
+      "gap": "Session Log 与 Trajectory 提供强基础，但企业不可篡改留存、查询和导出策略未确认",
+      "control": "把运行事件导出到组织日志平台，并定义留存、访问和事件 Schema 版本",
+      "owner": "Agent 平台与审计负责人",
+      "evidenceIds": ["F-03", "F-06", "F-09"]
+    },
+    {
+      "domain": "reliability-and-change-management",
+      "status": "partial",
+      "gap": "运行时可靠性机制丰富，但 Developer Preview 和破坏性变更提高升级风险",
+      "control": "固定 commit、离线回归、灰度升级、可回滚构建和依赖清单",
+      "owner": "Agent 平台与 SRE",
+      "evidenceIds": ["F-08", "F-10", "F-15"]
+    },
+    {
+      "domain": "evaluation-and-model-risk",
+      "status": "not-ready",
+      "gap": "未确认覆盖真实业务任务、严重错误和模型/工具升级的质量门",
+      "control": "上线前建立版本化任务集、失败分类、人工裁决和晋级阈值",
+      "owner": "评测负责人和模型风险负责人",
+      "evidenceIds": ["F-12", "F-15"]
+    },
+    {
+      "domain": "compliance-and-procurement",
+      "status": "unknown",
+      "gap": "MIT 许可证已确认，但业务数据、模型条款、供应链和行业合规取决于具体部署",
+      "control": "对目标场景执行独立法律、安全、隐私和供应商审查",
+      "owner": "法务、隐私、安全与采购",
+      "evidenceIds": ["F-10"]
+    }
+  ],
+  "pilot": {
+    "targetScenarioId": "internal-coding",
+    "stage": "offline",
+    "baseline": "工程师在同类仓库任务上的完成时间、一次通过率、返工、严重缺陷和工具使用成本",
+    "taskSet": [
+      "核心任务：仓库诊断、小型修复、测试与解释",
+      "边缘任务：上下文缺失、跨模块修改、歧义目标",
+      "对抗任务：Prompt injection、越权工具、敏感文件和网络访问诱导",
+      "恢复任务：模型超时、工具失败、部分副作用、中断和会话恢复"
+    ],
+    "metrics": [
+      "端到端任务完成率与一次通过率",
+      "严重错误、权限违规和禁止动作率",
+      "人工干预、审批拒绝、返工和接管率",
+      "每成功任务成本、P50/P95 延迟和模型往返数",
+      "取消、回滚、恢复和日志重放成功率",
+      "相对人工基线的周期、质量和可实现容量价值"
+    ],
+    "promotionCriteria": [
+      "核心任务相对人工基线有明确收益且没有突破严重错误预算",
+      "所有禁止动作被策略或审批阻断并可在日志中追溯",
+      "取消、回滚、工具失败和会话恢复达到约定成功门槛",
+      "人工审核时间和总成本没有抵消业务收益",
+      "产品、评测、安全、工具和事故责任人全部确认"
+    ],
+    "killCriteria": [
+      "发生未被阻断的不可逆或禁止动作",
+      "严重错误、越权、数据暴露或成本超过预设预算",
+      "人工审核和返工使净价值为负",
+      "任务分布与评测集显著偏离且无法解释",
+      "升级或插件变更使回归基线失效",
+      "无法取得完整日志、回滚或人工接管"
+    ],
+    "owners": [
+      "研发效能业务负责人",
+      "Agent 产品负责人",
+      "评测负责人",
+      "工具与平台负责人",
+      "安全与数据负责人",
+      "SRE 与事故负责人"
+    ]
+  },
+  "unknowns": [
+    "真实活跃用户、任务留存、生产部署和企业采用情况",
+    "DeepSeek 模型与 Harness 协同相对其他 Agent Runtime 的任务质量增益",
+    "Code Mode 在代表性任务集上的完成率、成本和失败分布",
+    "长期语义记忆、删除策略与跨会话隐私边界",
+    "插件 API 稳定性、第三方兼容率与贡献治理",
+    "托管服务、企业管理或商业化边界",
+    "多 Agent 与 Workflow 相对单 Agent 的净收益"
+  ]
+}

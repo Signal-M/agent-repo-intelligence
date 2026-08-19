@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Repo Intelligence</title>
+  <desc id="desc">Evidence-driven GitHub competitive analysis for product and Agent decisions.</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#E9EEF9"/>
+    </linearGradient>
+    <linearGradient id="signal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5B8CFF"/>
+      <stop offset="1" stop-color="#7C5CFC"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="22" flood-color="#0B1220" flood-opacity=".14"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="640" fill="#0B1220"/>
+  <path d="M0 0h1280v640H0z" fill="none" stroke="#16213A" stroke-width="2"/>
+  <circle cx="1120" cy="70" r="310" fill="#325FCC" opacity=".18"/>
+  <circle cx="1160" cy="120" r="190" fill="#775CFC" opacity=".13"/>
+  <path d="M820 640c83-186 225-299 460-340v340z" fill="#101B32"/>
+
+  <g transform="translate(72 64)">
+    <rect width="62" height="62" rx="17" fill="url(#signal)"/>
+    <path d="M18 18h26M18 31h18M18 44h26" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="44" cy="31" r="5" fill="#A7F3D0"/>
+    <text x="82" y="40" fill="#B9C5DA" font-family="Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="600" letter-spacing="2">OPEN-SOURCE PRODUCT INTELLIGENCE</text>
+  </g>
+
+  <g transform="translate(72 172)">
+    <text x="0" y="0" fill="#FFFFFF" font-family="Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="78" font-weight="750" letter-spacing="-3">Agent Repo</text>
+    <text x="0" y="82" fill="#FFFFFF" font-family="Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="78" font-weight="750" letter-spacing="-3">Intelligence</text>
+    <text x="3" y="142" fill="#AFC0DA" font-family="Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="27">From GitHub evidence to product &amp; adoption decisions.</text>
+    <text x="3" y="184" fill="#7183A3" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif" font-size="22">为产品经理打造的开源项目竞品分析与 Agent 业务落地框架</text>
+  </g>
+
+  <g transform="translate(72 512)" font-family="Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="650">
+    <g><rect width="142" height="46" rx="23" fill="#17243C" stroke="#2B3C59"/><text x="71" y="29" text-anchor="middle" fill="#D7E1F2">PRODUCT</text></g>
+    <g transform="translate(156)"><rect width="158" height="46" rx="23" fill="#17243C" stroke="#2B3C59"/><text x="79" y="29" text-anchor="middle" fill="#D7E1F2">AGENT LOOP</text></g>
+    <g transform="translate(328)"><rect width="160" height="46" rx="23" fill="#17243C" stroke="#2B3C59"/><text x="80" y="29" text-anchor="middle" fill="#D7E1F2">ENTERPRISE</text></g>
+    <g transform="translate(502)"><rect width="110" height="46" rx="23" fill="#17243C" stroke="#2B3C59"/><text x="55" y="29" text-anchor="middle" fill="#D7E1F2">TCO</text></g>
+    <g transform="translate(626)"><rect width="122" height="46" rx="23" fill="url(#signal)"/><text x="61" y="29" text-anchor="middle" fill="#FFFFFF">PILOT</text></g>
+  </g>
+
+  <g transform="translate(890 143)" filter="url(#shadow)">
+    <rect width="304" height="346" rx="28" fill="url(#paper)"/>
+    <rect x="28" y="28" width="248" height="52" rx="14" fill="#E2E9F5"/>
+    <circle cx="53" cy="54" r="8" fill="#5B8CFF"/>
+    <rect x="73" y="46" width="124" height="9" rx="4.5" fill="#8090AA"/>
+    <rect x="73" y="62" width="83" height="6" rx="3" fill="#B4C0D2"/>
+
+    <path d="M50 120h78" stroke="#17243C" stroke-width="12" stroke-linecap="round"/>
+    <path d="M50 151h198M50 173h154" stroke="#A5B2C7" stroke-width="8" stroke-linecap="round"/>
+    <rect x="50" y="212" width="204" height="79" rx="16" fill="#111B30"/>
+    <path d="M72 245h47M72 264h91" stroke="#9EAFCA" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="222" cy="251" r="20" fill="#2DD4BF"/>
+    <path d="m212 251 7 7 13-15" fill="none" stroke="#082F35" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="50" y="314" width="114" height="8" rx="4" fill="#CBD4E2"/>
+    <rect x="177" y="314" width="77" height="8" rx="4" fill="#6B82FF"/>
+  </g>
+</svg>

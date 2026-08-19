@@ -1,0 +1,34 @@
+name: Framework or capability proposal
+description: Propose a new analysis lens, business gate, validator, artifact, or forward test
+title: "[Proposal]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision problem
+      description: Which user decision cannot be handled reliably today?
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Concrete example
+      description: Provide a repository, business scenario, raw artifact, or failing task.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed method or resource
+      description: Describe the smallest reusable change and where it belongs.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation plan
+      description: How will we know this improves decision quality rather than report length?
+    validations:
+      required: true
+
