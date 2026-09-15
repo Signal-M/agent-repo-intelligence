@@ -5,7 +5,7 @@
 **面向产品经理、Agent 产品经理和技术战略团队的开源项目竞品分析与业务落地决策 Skill。**
 
 [![MIT License](https://img.shields.io/badge/license-MIT-2563EB.svg)](./LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/m2290526022-boop/agent-repo-intelligence?style=flat&color=6D5DFB)](https://github.com/m2290526022-boop/agent-repo-intelligence/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/Signal-M/agent-repo-intelligence?style=flat&color=6D5DFB)](https://github.com/Signal-M/agent-repo-intelligence/stargazers)
 
 ![Agent Repo Intelligence：从 GitHub 证据到产品与业务决策](./assets/social-preview.png)
 
@@ -199,7 +199,7 @@ Golden Case 展示了为什么“项目很好”不等于“所有场景都应�
 将公开仓库克隆到 Codex 的 skills 目录，并保持目录名与 skill ID 一致：
 
 ```bash
-git clone https://github.com/m2290526022-boop/agent-repo-intelligence.git \
+git clone https://github.com/Signal-M/agent-repo-intelligence.git \
   ~/.codex/skills/repo-competitive-analysis
 ```
 
