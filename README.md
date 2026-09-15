@@ -1,8 +1,8 @@
 # Agent Repo Intelligence — GitHub 竞品分析 Skill for PMs
 
-> Evidence-driven open-source product and AI Agent due diligence for product managers — from GitHub repository evidence to competitive insight, business adoption decisions, enterprise readiness, TCO, and measurable pilot plans.
-
 **面向产品经理、Agent 产品经理和技术战略团队的开源项目竞品分析与业务落地决策 Skill。**
+
+> Evidence-driven open-source product and AI Agent due diligence for product managers — from GitHub repository evidence to competitive insight, business adoption decisions, enterprise readiness, TCO, and measurable pilot plans.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-2563EB.svg)](./LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/Signal-M/agent-repo-intelligence?style=flat&color=6D5DFB)](https://github.com/Signal-M/agent-repo-intelligence/stargazers)
